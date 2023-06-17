@@ -3,13 +3,13 @@ package com.example.newsapplication.di
 import android.content.Context
 import androidx.room.Room
 import com.example.newsapplication.data.local.ArticleDatabase
-import com.example.newsapplication.data.local.entity.Converters
 import com.example.newsapplication.data.remote.NewsApi
 import com.example.newsapplication.data.repository.ArticleRepositoryImpl
 import com.example.newsapplication.data.util.GsonParser
 import com.example.newsapplication.data.util.MoshiParser
 import com.example.newsapplication.domain.repository.ArticleRepository
 import com.example.newsapplication.domain.use_case.GetAllArticles
+import com.example.newsapplication.domain.use_case.GetBreakingNews
 import com.google.gson.Gson
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapter
@@ -56,7 +56,7 @@ class AppModule {
             klass = ArticleDatabase::class.java,
             name = "article_db"
             )
-            .addTypeConverter(Converters(MoshiParser(moshi)))
+//            .addTypeConverter(Converters(MoshiParser(moshi)))
             .build()
     }
 
@@ -73,5 +73,11 @@ class AppModule {
     @Singleton
     fun provideGetAllArticles(repository: ArticleRepository): GetAllArticles{
         return GetAllArticles(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetBreakingNews(repository: ArticleRepository): GetBreakingNews{
+        return GetBreakingNews(repository)
     }
 }

@@ -21,4 +21,8 @@ interface NewsApi {
 //       @Query("apiKey") key: String = BuildConfig.API_KEY
        @Query("q") query: String = "bitcoin"
     ): ResponseDTO
+
+    @Headers("X-Api-Key: $API_KEY")
+    @GET("top-headlines?country=us&pageSize=100")
+    suspend fun getBreakingNews(): ResponseDTO
 }

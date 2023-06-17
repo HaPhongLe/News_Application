@@ -1,6 +1,7 @@
 package com.example.newsapplication.data.remote.dto
 
 import com.example.newsapplication.data.local.entity.ArticleEntity
+import com.example.newsapplication.data.local.entity.HeadlineEntity
 
 data class ArticleDTO (
     val source: SourceDTO,
@@ -10,18 +11,21 @@ data class ArticleDTO (
     val url: String,
     val urlToImage: String?,
     val publishedAt: String,
-    val content: String
+    val content: String?
 ) {
     fun toArticleEntity(): ArticleEntity{
         return ArticleEntity(
-            source = source.toSource(),
-            author = author,
+            source = source.name,
             title = title,
             description = description,
             url = url,
             urlToImage = urlToImage,
             publishedAt = publishedAt,
-            content = content
+       )
+    }
+    fun toHeadLineEntity(): HeadlineEntity{
+        return HeadlineEntity(
+            articleUrl = url
         )
     }
 }
