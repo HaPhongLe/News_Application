@@ -7,16 +7,19 @@ import com.example.newsapplication.domain.model.Article
 import com.example.newsapplication.domain.repository.ArticleRepository
 import com.example.newsapplication.util.Resource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class ArticleRepositoryImpl(
     private val api: NewsApi,
     private val db: ArticleDatabase
 ): ArticleRepository {
+
+    val dao = db.dao
     override fun getAllArticles(): Flow<Resource<List<Article>>> {
         return networkBoundResource(
-            query = {db.dao.getArticles()} ,
+            query = {dao.getArticles()} ,
             fetch = {api.getAllArticles()},
-            saveFetchResult = {responseDTO -> db.dao.insertArticles(responseDTO.articles.map { articleDTO -> articleDTO.toArticleEntity() })},
+            saveFetchResult = {responseDTO -> dao.insertArticles(responseDTO.articles.map { articleDTO -> articleDTO.toArticleEntity() })},
             shouldFetch = {true},
             convertLocalToResult = {articleEntityList ->
                 articleEntityList.map { articleEntity -> articleEntity.toArticle() }
@@ -26,15 +29,23 @@ class ArticleRepositoryImpl(
 
     override fun getBreakingNews(): Flow<Resource<List<Article>>> {
         return networkBoundResource(
-            query = {db.dao.getHeadlines()},
+            query = {dao.getHeadlines()},
             fetch = {api.getBreakingNews()},
             saveFetchResult = {responseDTO ->
-                db.dao.insertArticles(responseDTO.articles.map { articleDTO -> articleDTO.toArticleEntity() })
-                db.dao.insertBreakingNews(responseDTO.articles.map { articleDTO -> articleDTO.toHeadLineEntity() })
+                dao.insertArticles(responseDTO.articles.map { articleDTO -> articleDTO.toArticleEntity() })
+                dao.insertBreakingNews(responseDTO.articles.map { articleDTO -> articleDTO.toHeadLineEntity() })
             },
             shouldFetch = {true},
             convertLocalToResult = {articleEntityList ->
                 articleEntityList.map { articleEntity -> articleEntity.toArticle() }}
         )
+    }
+
+    override fun getBookMarks(): Flow<List<Article>> {
+        return dao.getBookmarks().map { articles -> articles.map { articleEntity -> articleEntity.toArticle() } }
+    }
+
+    override suspend fun updateArticle(article: Article){
+        dao.updateArticle(article.toArticleEntity())
     }
 }

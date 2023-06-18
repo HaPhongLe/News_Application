@@ -1,9 +1,6 @@
 package com.example.newsapplication.data.local
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.newsapplication.data.local.entity.ArticleEntity
 import com.example.newsapplication.data.local.entity.HeadlineEntity
 import kotlinx.coroutines.flow.Flow
@@ -21,6 +18,13 @@ interface ArticleDao {
     @Query("SELECT * FROM headline INNER JOIN article ON articleUrl = url")
     fun getHeadlines(): Flow<List<ArticleEntity>>
 
+    @Query("SELECT * FROM article WHERE isBookmarked = true")
+    fun getBookmarks(): Flow<List<ArticleEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertBreakingNews(headlines: List<HeadlineEntity>)
+
+    @Update
+    suspend fun updateArticle(articleEntity: ArticleEntity)
+
 }

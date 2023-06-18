@@ -16,8 +16,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class BreakingNewsFragment : Fragment() {
 
-    private val viewModel: BreakingNewsViewModel by viewModels<BreakingNewsViewModel>()
-    private val recyclerViewListAdapter = NewsRecyclerViewListAdapter()
+    private val viewModel: BreakingNewsViewModel by viewModels()
+
     private lateinit var binding: FragmentBreakingNewsBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,7 +31,7 @@ class BreakingNewsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getHeadlines()
-
+        val recyclerViewListAdapter = NewsRecyclerViewListAdapter(viewModel::onBookmarkClick)
         binding.newsContainer.adapter = recyclerViewListAdapter
         binding.newsContainer.layoutManager = LinearLayoutManager(requireContext())
         viewModel.state.observe(this){

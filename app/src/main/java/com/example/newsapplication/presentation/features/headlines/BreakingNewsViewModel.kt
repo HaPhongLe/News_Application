@@ -5,7 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.newsapplication.domain.model.Article
 import com.example.newsapplication.domain.use_case.GetBreakingNews
+import com.example.newsapplication.domain.use_case.UpdateBookmark
 import com.example.newsapplication.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
@@ -14,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BreakingNewsViewModel @Inject constructor(
-    private val getBreakingNews: GetBreakingNews
+    private val getBreakingNews: GetBreakingNews,
+    private val updateBookmark: UpdateBookmark
 ): ViewModel() {
     
     private val TAG = "GetBreakingNews"
@@ -38,6 +41,13 @@ class BreakingNewsViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    fun onBookmarkClick(article: Article){
+        val updatedArticle = article.copy(isBookmarked = !article.isBookmarked)
+        viewModelScope.launch {
+            updateBookmark(updatedArticle)
         }
     }
 }

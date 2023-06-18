@@ -10,6 +10,7 @@ import com.example.newsapplication.data.util.MoshiParser
 import com.example.newsapplication.domain.repository.ArticleRepository
 import com.example.newsapplication.domain.use_case.GetAllArticles
 import com.example.newsapplication.domain.use_case.GetBreakingNews
+import com.example.newsapplication.domain.use_case.UpdateBookmark
 import com.google.gson.Gson
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapter
@@ -56,6 +57,7 @@ class AppModule {
             klass = ArticleDatabase::class.java,
             name = "article_db"
             )
+            .fallbackToDestructiveMigration()
 //            .addTypeConverter(Converters(MoshiParser(moshi)))
             .build()
     }
@@ -79,5 +81,11 @@ class AppModule {
     @Singleton
     fun provideGetBreakingNews(repository: ArticleRepository): GetBreakingNews{
         return GetBreakingNews(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUpdateBookmark(repository: ArticleRepository): UpdateBookmark{
+        return UpdateBookmark(repository)
     }
 }

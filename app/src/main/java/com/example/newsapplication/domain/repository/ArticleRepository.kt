@@ -8,4 +8,8 @@ interface ArticleRepository {
     fun getAllArticles(): Flow<Resource<List<Article>>>
 
     fun getBreakingNews(): Flow<Resource<List<Article>>>
+
+    fun getBookMarks(): Flow<List<Article>>
+
+    suspend fun updateArticle(article: Article)
 }
