@@ -1,4 +1,4 @@
-package com.example.newsapplication.presentation.features.shared
+package com.example.newsapplication.presentation.shared
 
 import android.view.View
 import android.widget.TextView

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.Orientation
 import com.example.newsapplication.R
 import com.example.newsapplication.databinding.FragmentBreakingNewsBinding
-import com.example.newsapplication.presentation.features.shared.NewsRecyclerViewListAdapter
+import com.example.newsapplication.presentation.shared.NewsRecyclerViewListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

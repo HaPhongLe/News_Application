@@ -1,4 +1,4 @@
-package com.example.newsapplication.presentation.features.shared
+package com.example.newsapplication.presentation.shared
 
 import androidx.recyclerview.widget.DiffUtil
 import com.example.newsapplication.domain.model.Article
