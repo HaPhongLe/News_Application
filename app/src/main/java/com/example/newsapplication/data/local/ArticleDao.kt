@@ -15,8 +15,17 @@ interface ArticleDao {
     @Query("SELECT * FROM article")
     fun getArticles(): Flow<List<ArticleEntity>>
 
+    @Query("DELETE FROM article")
+    fun deleteArticles()
+
     @Query("SELECT * FROM headline INNER JOIN article ON articleUrl = url")
     fun getHeadlines(): Flow<List<ArticleEntity>>
+
+    @Query("DELETE FROM headline")
+    fun deleteBreakingNews()
+
+    @Query("DELETE FROM article  WHERE EXISTS (  SELECT * FROM headline INNER JOIN article ON articleUrl = url)")
+    fun deleteBreakingNewsFromArticles()
 
     @Query("SELECT * FROM article WHERE isBookmarked = true")
     fun getBookmarks(): Flow<List<ArticleEntity>>

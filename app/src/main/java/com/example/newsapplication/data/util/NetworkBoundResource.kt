@@ -2,6 +2,7 @@ package com.example.newsapplication.data.util
 
 import com.example.newsapplication.util.Resource
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 
 inline fun <RemoteType, LocalType, ResultType> networkBoundResource(
@@ -10,21 +11,24 @@ inline fun <RemoteType, LocalType, ResultType> networkBoundResource(
     crossinline saveFetchResult: suspend (RemoteType) -> Unit,
     crossinline shouldFetch: (LocalType) -> Boolean = {true},
     crossinline convertLocalToResult: (LocalType) -> ResultType
-) = flow{
+) = channelFlow{
 
     val data = query().first()
-    val flow = if(shouldFetch(data)){
-        emit(Resource.Loading(data = convertLocalToResult(data)))
+   if(shouldFetch(data)){
+       val loading = launch {
+           send(Resource.Loading(data = convertLocalToResult(data)))
+       }
         try {
+            kotlinx.coroutines.delay(2000)
             saveFetchResult(fetch())
-            query().map { Resource.Success( data = convertLocalToResult(it)) }
+            loading.cancel()
+            query().collect { send(Resource.Success( data = convertLocalToResult(it)) ) }
 
         }catch (e: Throwable){
-            query().map {  Resource.Error(data = convertLocalToResult(it), error = e)}
+            query().map { send(Resource.Error(data = convertLocalToResult(it), error = e)) }
         }
 
     } else {
-        query().map { Resource.Success(data = convertLocalToResult(data)) }
+        query().map { send(Resource.Success(data = convertLocalToResult(it)))  }
     }
-    emitAll(flow)
 }

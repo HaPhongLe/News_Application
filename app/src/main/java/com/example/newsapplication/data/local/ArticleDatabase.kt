@@ -7,7 +7,7 @@ import com.example.newsapplication.data.local.entity.ArticleEntity
 import com.example.newsapplication.data.local.entity.HeadlineEntity
 
 
-@Database(entities = [ArticleEntity::class, HeadlineEntity::class], version = 2)
+@Database(entities = [ArticleEntity::class, HeadlineEntity::class], version = 3)
 //@TypeConverters(Converters::class)
 abstract class ArticleDatabase: RoomDatabase() {
 

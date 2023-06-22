@@ -16,13 +16,10 @@ interface NewsApi {
     @Headers("X-Api-Key: $API_KEY")
     @GET("everything")
     suspend fun getAllArticles(
-//        @Query("page") page: Int = 1,
-//        @Query("pageSize") pageSize: Int = 100,
-//       @Query("apiKey") key: String = BuildConfig.API_KEY
        @Query("q") query: String = "bitcoin"
     ): ResponseDTO
 
     @Headers("X-Api-Key: $API_KEY")
-    @GET("top-headlines?country=au&pageSize=100")
+    @GET("top-headlines?country=us&pageSize=100")
     suspend fun getBreakingNews(): ResponseDTO
 }

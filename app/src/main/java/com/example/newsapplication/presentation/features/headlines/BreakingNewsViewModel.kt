@@ -25,6 +25,10 @@ class BreakingNewsViewModel @Inject constructor(
     private val _state = MutableLiveData<BreakingNewsState>(BreakingNewsState(status = Status.LOADING, data = emptyList()))
     val state: LiveData<BreakingNewsState> = _state
 
+    init {
+        getHeadlines()
+    }
+
     fun getHeadlines(){
         viewModelScope.launch { 
             getBreakingNews().collect{result ->

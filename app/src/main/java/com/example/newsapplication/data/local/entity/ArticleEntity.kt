@@ -13,7 +13,8 @@ data class ArticleEntity(
     @PrimaryKey val url: String,
     val urlToImage: String?,
     val publishedAt: String,
-    val isBookmarked: Boolean = false
+    val isBookmarked: Boolean = false,
+    val updateAt: Long = System.currentTimeMillis()
 ) {
     fun toArticle(): Article{
         return Article(

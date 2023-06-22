@@ -1,5 +1,6 @@
 package com.example.newsapplication.data.repository
 
+import androidx.room.withTransaction
 import com.example.newsapplication.data.local.ArticleDatabase
 import com.example.newsapplication.data.remote.NewsApi
 import com.example.newsapplication.data.util.networkBoundResource
@@ -15,7 +16,7 @@ class ArticleRepositoryImpl(
 ): ArticleRepository {
 
     val dao = db.dao
-    override fun getAllArticles(): Flow<Resource<List<Article>>> {
+    override fun searchArticles(query: String): Flow<Resource<List<Article>>> {
         return networkBoundResource(
             query = {dao.getArticles()} ,
             fetch = {api.getAllArticles()},
@@ -32,8 +33,13 @@ class ArticleRepositoryImpl(
             query = {dao.getHeadlines()},
             fetch = {api.getBreakingNews()},
             saveFetchResult = {responseDTO ->
-                dao.insertArticles(responseDTO.articles.map { articleDTO -> articleDTO.toArticleEntity() })
-                dao.insertBreakingNews(responseDTO.articles.map { articleDTO -> articleDTO.toHeadLineEntity() })
+                db.withTransaction {
+                    dao.deleteBreakingNews()
+                    dao.deleteBreakingNewsFromArticles()
+                    dao.insertArticles(responseDTO.articles.map { articleDTO -> articleDTO.toArticleEntity() })
+                    dao.insertBreakingNews(responseDTO.articles.map { articleDTO -> articleDTO.toHeadLineEntity() })
+                }
+
             },
             shouldFetch = {true},
             convertLocalToResult = {articleEntityList ->

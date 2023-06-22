@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.Orientation
@@ -32,12 +33,21 @@ class BreakingNewsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getHeadlines()
         val recyclerViewListAdapter = NewsRecyclerViewListAdapter(viewModel::onBookmarkClick)
-        binding.newsContainer.adapter = recyclerViewListAdapter
-        binding.newsContainer.layoutManager = LinearLayoutManager(requireContext())
-        viewModel.state.observe(this){
-            if(it.status == Status.SUCCESS){
-                recyclerViewListAdapter.submitList(it.data)
+        binding.apply {
+            newsContainer.adapter = recyclerViewListAdapter
+            newsContainer.layoutManager = LinearLayoutManager(requireContext())
+            viewModel.state.observe(this@BreakingNewsFragment){
+                swipeRefreshLayout.isRefreshing = it.status == Status.LOADING
+                refreshBtn.isVisible = it.status == Status.ERROR
+                breakingNewsError.isVisible = it.status == Status.ERROR
+                breakingNewsError.text = it.error
+
+                if(it.status == Status.SUCCESS){
+                    recyclerViewListAdapter.submitList(it.data)
+                }
             }
         }
+
+
     }
 }

@@ -9,6 +9,7 @@ import com.example.newsapplication.data.util.GsonParser
 import com.example.newsapplication.data.util.MoshiParser
 import com.example.newsapplication.domain.repository.ArticleRepository
 import com.example.newsapplication.domain.use_case.GetAllArticles
+import com.example.newsapplication.domain.use_case.GetBookMarks
 import com.example.newsapplication.domain.use_case.GetBreakingNews
 import com.example.newsapplication.domain.use_case.UpdateBookmark
 import com.google.gson.Gson
@@ -87,5 +88,11 @@ class AppModule {
     @Singleton
     fun provideUpdateBookmark(repository: ArticleRepository): UpdateBookmark{
         return UpdateBookmark(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetBookmark(repository: ArticleRepository): GetBookMarks{
+        return GetBookMarks(repository)
     }
 }
