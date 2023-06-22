@@ -1,12 +1,13 @@
 package com.example.newsapplication.presentation.features.headlines
 
 import android.os.Bundle
+import android.view.*
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.Orientation
 import com.example.newsapplication.R
@@ -31,7 +32,7 @@ class BreakingNewsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getHeadlines()
+//        viewModel.getHeadlines()
         val recyclerViewListAdapter = NewsRecyclerViewListAdapter(viewModel::onBookmarkClick)
         binding.apply {
             newsContainer.adapter = recyclerViewListAdapter
@@ -39,6 +40,9 @@ class BreakingNewsFragment : Fragment() {
             viewModel.state.observe(this@BreakingNewsFragment){
                 swipeRefreshLayout.isRefreshing = it.status == Status.LOADING
                 refreshBtn.isVisible = it.status == Status.ERROR
+                refreshBtn.setOnClickListener {
+                    viewModel.getHeadlines()
+                }
                 breakingNewsError.isVisible = it.status == Status.ERROR
                 breakingNewsError.text = it.error
 
@@ -46,8 +50,37 @@ class BreakingNewsFragment : Fragment() {
                     recyclerViewListAdapter.submitList(it.data)
                 }
             }
+
+            swipeRefreshLayout.setOnRefreshListener {
+                viewModel.getHeadlines()
+            }
+
+            val menuHost = requireActivity() as MenuHost
+            menuHost.addMenuProvider(
+                object : MenuProvider{
+                    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                        menuInflater.inflate(R.menu.breaking_news_menu, menu)
+                    }
+
+                    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                        return when(menuItem.itemId){
+                            R.id.refresh -> {
+                                viewModel.getHeadlines()
+                                true
+                            }
+                            else ->{
+                                true
+                            }
+                        }
+                    }
+                }, viewLifecycleOwner, Lifecycle.State.RESUMED
+            )
         }
 
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
     }
 }
