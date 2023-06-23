@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 class GetBreakingNews(
     private val respository: ArticleRepository
 ) {
-    operator fun invoke() : Flow<Resource<List<Article>>>{
-       return respository.getBreakingNews()
+    operator fun invoke(forceRefresh: Boolean) : Flow<Resource<List<Article>>>{
+       return respository.getBreakingNews(forceRefresh)
     }
 }

@@ -7,9 +7,10 @@ import kotlinx.coroutines.flow.Flow
 interface ArticleRepository {
     fun searchArticles(query: String): Flow<Resource<List<Article>>>
 
-    fun getBreakingNews(): Flow<Resource<List<Article>>>
+    fun getBreakingNews(forceRefresh: Boolean): Flow<Resource<List<Article>>>
 
     fun getBookMarks(): Flow<List<Article>>
 
     suspend fun updateArticle(article: Article)
+    suspend fun deleteNonBookmarkedArticlesOlderThan(time: Long)
 }

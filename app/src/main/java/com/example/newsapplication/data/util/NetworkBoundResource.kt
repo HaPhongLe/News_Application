@@ -20,15 +20,16 @@ inline fun <RemoteType, LocalType, ResultType> networkBoundResource(
        }
         try {
             kotlinx.coroutines.delay(2000)
-            saveFetchResult(fetch())
+            val remoteData = fetch()
+            saveFetchResult(remoteData)
             loading.cancel()
             query().collect { send(Resource.Success( data = convertLocalToResult(it)) ) }
 
         }catch (e: Throwable){
-            query().map { send(Resource.Error(data = convertLocalToResult(it), error = e)) }
+            query().collect{ send(Resource.Error(data = convertLocalToResult(it), error = e)) }
         }
 
     } else {
-        query().map { send(Resource.Success(data = convertLocalToResult(it)))  }
+        query().collect { send(Resource.Success(data = convertLocalToResult(it)))  }
     }
 }

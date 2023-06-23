@@ -36,4 +36,7 @@ interface ArticleDao {
     @Update
     suspend fun updateArticle(articleEntity: ArticleEntity)
 
+    @Query("DELETE FROM article WHERE updateAt < :time AND isBookmarked = false")
+    suspend fun deleteNonBookmarkedArticlesOlderThan(time: Long)
+
 }
