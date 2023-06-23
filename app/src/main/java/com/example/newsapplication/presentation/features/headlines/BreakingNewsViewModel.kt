@@ -39,9 +39,7 @@ class BreakingNewsViewModel @Inject constructor(
 //
     private val _state = MutableStateFlow<BreakingNewsState>(BreakingNewsState(status = Status.LOADING, data = emptyList()))
     val state: StateFlow<BreakingNewsState> = _state
-//    val state = refreshTrigger.flatMapLatest { refreshType ->
-//        getBreakingNews(refreshType == RefreshType.Manual)
-//}
+
 
     init {
         viewModelScope.launch {
@@ -91,5 +89,6 @@ class BreakingNewsViewModel @Inject constructor(
             updateBookmark(updatedArticle)
         }
     }
+
 
 }

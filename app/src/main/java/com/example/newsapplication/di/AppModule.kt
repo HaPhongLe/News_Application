@@ -98,4 +98,10 @@ class AppModule {
     fun provideDeleteNonBookmarkedArticlesOlderThan(repository: ArticleRepository): DeleteNonBookmarkedArticlesOlderThan{
         return DeleteNonBookmarkedArticlesOlderThan(repository)
     }
+
+    @Provides
+    @Singleton
+    fun provideResetAllBookmarks(repository: ArticleRepository): ResetAllBookmarks{
+        return ResetAllBookmarks(repository)
+    }
 }

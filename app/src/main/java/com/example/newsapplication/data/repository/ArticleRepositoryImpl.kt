@@ -9,6 +9,7 @@ import com.example.newsapplication.domain.model.Article
 import com.example.newsapplication.domain.repository.ArticleRepository
 import com.example.newsapplication.util.Resource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.util.concurrent.TimeUnit
 
@@ -38,10 +39,21 @@ class ArticleRepositoryImpl(
                 Log.d(TAG, "getBreakingNews: ")
                 api.getBreakingNews()},
             saveFetchResult = {responseDTO ->
+
+                val serverArticles = responseDTO.articles
+                val bookmarks = dao.getBookmarks().first()
+                val localArticles = serverArticles.map { serverArticle ->
+                    if(bookmarks.any { bookmark -> bookmark.url == serverArticle.url }){
+                        serverArticle.toArticleEntity().copy(isBookmarked = true)
+                    }else{
+                        serverArticle.toArticleEntity()
+                    }
+                }
+
                 db.withTransaction {
                     dao.deleteBreakingNews()
                     dao.deleteBreakingNewsFromArticles()
-                    dao.insertArticles(responseDTO.articles.map { articleDTO -> articleDTO.toArticleEntity() })
+                    dao.insertArticles(localArticles)
                     dao.insertBreakingNews(responseDTO.articles.map { articleDTO -> articleDTO.toHeadLineEntity() })
                 }
 
@@ -72,4 +84,10 @@ class ArticleRepositoryImpl(
     override suspend fun deleteNonBookmarkedArticlesOlderThan(time: Long) {
         dao.deleteNonBookmarkedArticlesOlderThan(time)
     }
+
+    override suspend fun resetAllBookmarks() {
+        dao.resetAllBookmarks()
+    }
+
+
 }

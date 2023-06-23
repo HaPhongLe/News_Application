@@ -17,7 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), AppBarSetting{
     private val TAG = "MainActivity"
 
     private val viewModel: AllArticleViewModel by lazy {
@@ -29,19 +29,17 @@ class MainActivity : AppCompatActivity() {
         val binding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
-//        viewModel.getArticles()
-//        openBreakingNewsFrag()
-        val locale: String = resources.configuration.locale.country
-        val tm = this.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-        val countryCodeValue = tm.networkCountryIso
-//        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        Log.d(TAG, "onCreate: $locale $countryCodeValue")
+
         val navHostFragment = supportFragmentManager.findFragmentById(binding.fragmentContainerView.id) as NavHostFragment
         val navController = navHostFragment.navController
         binding.bottomNavigationView.setupWithNavController(navController)
     }
 
-//    private fun openBreakingNewsFrag(){
-//        supportFragmentManager.beginTransaction().replace(R.id.frag_container, BreakingNewsFragment()).commit()
-//    }
+    override fun setTtitle(title: String) {
+        supportActionBar?.title = title
+    }
+}
+
+interface AppBarSetting{
+    fun setTtitle(title: String)
 }

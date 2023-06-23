@@ -30,6 +30,9 @@ interface ArticleDao {
     @Query("SELECT * FROM article WHERE isBookmarked = true")
     fun getBookmarks(): Flow<List<ArticleEntity>>
 
+    @Query("UPDATE article SET isBookmarked = false")
+    suspend fun resetAllBookmarks()
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertBreakingNews(headlines: List<HeadlineEntity>)
 

@@ -13,4 +13,6 @@ interface ArticleRepository {
 
     suspend fun updateArticle(article: Article)
     suspend fun deleteNonBookmarkedArticlesOlderThan(time: Long)
+
+    suspend fun resetAllBookmarks()
 }
