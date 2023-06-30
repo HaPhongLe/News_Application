@@ -14,5 +14,14 @@ fun Fragment.showSnackbar(
     Snackbar.make(view, message, duration).show()
 }
 
+
+inline fun <T: View> T.setInvisibility(isInvisible: Boolean){
+    if (isInvisible){
+        this.visibility = View.INVISIBLE
+    }else{
+        this.visibility = View.VISIBLE
+    }
+}
+
 val <T> T.exhaustive: T
     get() = this

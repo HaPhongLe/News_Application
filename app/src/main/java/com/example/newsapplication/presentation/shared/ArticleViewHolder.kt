@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
+import com.bumptech.glide.Priority
 import com.example.newsapplication.R
 import com.example.newsapplication.databinding.NewsViewBinding
 import com.example.newsapplication.domain.model.Article
@@ -20,6 +21,7 @@ class ArticleViewHolder(
             Glide.with(binding.root)
                 .load(article.urlToImage)
                 .placeholder(R.drawable.place_holder)
+                .priority(Priority.IMMEDIATE)
                 .into(binding.newsThumbnail)
             newsTitle.text = article.title
             newsSource.text = article.source

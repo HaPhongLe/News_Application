@@ -3,9 +3,10 @@ package com.example.newsapplication.data.local.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.newsapplication.domain.model.Article
+import com.example.newsapplication.util.Constant
 
 
-@Entity(tableName = "article")
+@Entity(tableName = Constant.ARTICLE_TABLE)
 data class ArticleEntity(
     val source: String,
     val title: String,

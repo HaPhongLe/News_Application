@@ -20,6 +20,9 @@ interface NewsApi {
     ): ResponseDTO
 
     @Headers("X-Api-Key: $API_KEY")
-    @GET("top-headlines?country=us&pageSize=100")
-    suspend fun getBreakingNews(): ResponseDTO
+    @GET("top-headlines?country=au")
+    suspend fun getBreakingNews(
+        @Query("page") page: Int,
+        @Query("pageSize") pageSize: Int
+    ): ResponseDTO
 }

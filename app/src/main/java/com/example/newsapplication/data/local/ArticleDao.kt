@@ -1,5 +1,6 @@
 package com.example.newsapplication.data.local
 
+import androidx.paging.PagingSource
 import androidx.room.*
 import com.example.newsapplication.data.local.entity.ArticleEntity
 import com.example.newsapplication.data.local.entity.HeadlineEntity
@@ -19,7 +20,7 @@ interface ArticleDao {
     fun deleteArticles()
 
     @Query("SELECT * FROM headline INNER JOIN article ON articleUrl = url")
-    fun getHeadlines(): Flow<List<ArticleEntity>>
+    fun getBreakingNews(): PagingSource< Int, ArticleEntity>
 
     @Query("DELETE FROM headline")
     fun deleteBreakingNews()

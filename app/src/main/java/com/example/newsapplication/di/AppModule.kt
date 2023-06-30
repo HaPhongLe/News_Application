@@ -62,6 +62,7 @@ class AppModule {
 
     @Provides
     @Singleton
+    @OptIn(androidx.paging.ExperimentalPagingApi::class)
     fun provideArticleRepository(
         api: NewsApi,
         db: ArticleDatabase
