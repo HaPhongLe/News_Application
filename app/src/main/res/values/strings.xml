@@ -7,4 +7,6 @@
     <string name="title_search_articles">Search</string>
     <string name="error_unknown">Unknown Error</string>
     <string name="btn_refresh">Refresh</string>
+    <string name="btn_retry">Retry</string>
+    <string name="end_of_list">No more results</string>
 </resources>

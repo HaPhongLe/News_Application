@@ -42,34 +42,24 @@ class ArticleRemoteMediator (
             LoadType.PREPEND -> {
                 val remoteKey = getRemoteKeyForFirstItem(state)
                 Log.d(TAG, "load: prepend remote key $remoteKey, prev page ${remoteKey?.prevKey}")
-                val prevPage = remoteKey?.prevKey?: return MediatorResult.Success(endOfPaginationReached = true)
+                val prevPage = remoteKey?.prevKey?: return MediatorResult.Success(endOfPaginationReached = remoteKey != null)
                 prevPage
             }
             LoadType.APPEND -> {
 
                 val remoteKey = getRemoteKeyForLastItem(state)
-
-                val lastItem = remoteKeyDao.getLastRemoteNextKey()
-                val nextPage = remoteKey?.nextKey
-                var key: Int? = null
-                if(nextPage != null){
-                   key = nextPage
-                }
-                if (lastItem != null){
-                    key = lastItem
-                }
-                Log.d(TAG, "load: append remote key $remoteKey, next page $key")
-                key?: return MediatorResult.Success(endOfPaginationReached = true)
+                val nextKey = remoteKey?.nextKey?: return MediatorResult.Success(endOfPaginationReached = remoteKey != null)
+                nextKey
             }
         }
 
         //if current page returns
         //do fetch new data with that current page
         try {
-            Log.d(TAG, "load: $requestPage")
             val response = api.getBreakingNews(page = requestPage, pageSize = Constant.ITEMS_PER_PAGE)
             val serverArticles = response.articles
             val isEndofPagination = serverArticles.isEmpty()
+            Log.d(TAG, "load: $requestPage $isEndofPagination")
 
             val prevKey: Int? = if(requestPage == 1) null else  requestPage -1
             val nextKey: Int? = if (isEndofPagination) null else requestPage + 1
