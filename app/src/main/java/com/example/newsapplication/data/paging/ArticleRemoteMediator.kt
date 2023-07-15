@@ -10,8 +10,9 @@ import com.example.newsapplication.data.local.ArticleDatabase
 import com.example.newsapplication.data.local.entity.ArticleEntity
 import com.example.newsapplication.data.local.entity.ArticleRemoteKey
 import com.example.newsapplication.data.remote.NewsApi
-import com.example.newsapplication.domain.model.Article
 import com.example.newsapplication.util.Constant
+import kotlinx.coroutines.flow.first
+import kotlin.math.log
 
 @OptIn(ExperimentalPagingApi::class)
 class ArticleRemoteMediator (
@@ -58,11 +59,20 @@ class ArticleRemoteMediator (
         try {
             val response = api.getBreakingNews(page = requestPage, pageSize = Constant.ITEMS_PER_PAGE)
             val serverArticles = response.articles
-            val isEndofPagination = serverArticles.isEmpty()
-            Log.d(TAG, "load: $requestPage $isEndofPagination")
+            val isEndOfPagination = serverArticles.isEmpty()
+            Log.d(TAG, "load: $requestPage $isEndOfPagination")
 
             val prevKey: Int? = if(requestPage == 1) null else  requestPage -1
-            val nextKey: Int? = if (isEndofPagination) null else requestPage + 1
+            val nextKey: Int? = if (isEndOfPagination) null else requestPage + 1
+            val bookmarks = articleDao.getBookmarks().first()
+            Log.d(TAG, "load: bookmarks ${bookmarks.size}")
+            val localArticles = serverArticles.map { serverArticle ->
+                val isBookmarked = bookmarks.any { bookmark ->
+                    bookmark.url == serverArticle.url
+                }
+                Log.d(TAG, "load: is bookmarked $isBookmarked")
+                serverArticle.toArticleEntity().copy(isBookmarked = isBookmarked)
+            }
 
             //update the database by inserting new entries of data and remotekeys
 
@@ -72,7 +82,8 @@ class ArticleRemoteMediator (
                     articleDao.deleteBreakingNews()
                     remoteKeyDao.deleteAllArticleRemoteKeys()
                 }
-                articleDao.insertArticles(serverArticles.map { serverArticle -> serverArticle.toArticleEntity() })
+
+                articleDao.insertArticles(localArticles)
                 articleDao.insertBreakingNews(serverArticles.map { serverArticle -> serverArticle.toHeadLineEntity() })
                 remoteKeyDao.insertArticleRemoteKeys(serverArticles.map { serverArticle -> ArticleRemoteKey(
                     url = serverArticle.url,
@@ -80,7 +91,7 @@ class ArticleRemoteMediator (
                     nextKey = nextKey
                     ) })
             }
-            return MediatorResult.Success(isEndofPagination)
+            return MediatorResult.Success(isEndOfPagination)
         }catch (e: java.lang.Exception){
             return MediatorResult.Error(e)
         }

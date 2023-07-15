@@ -175,10 +175,10 @@ class BreakingNewsFragment : Fragment() {
             }
 
             swipeRefreshLayout.setOnRefreshListener {
-                viewModel.refresh()
+                viewModel.manualRefresh()
             }
             btnRetry.setOnClickListener {
-                viewModel.refresh()
+                viewModel.manualRefresh()
             }
 
             val menuHost = requireActivity() as MenuHost
@@ -191,7 +191,7 @@ class BreakingNewsFragment : Fragment() {
                     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                         return when (menuItem.itemId) {
                             R.id.refresh -> {
-                                viewModel.refresh()
+                                viewModel.autoRefresh()
                                 true
                             }
                             else -> {
@@ -208,7 +208,7 @@ class BreakingNewsFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        viewModel.refresh()
+        viewModel.autoRefresh()
     }
 
     private fun sendErrorToast(error: String) {
